@@ -1,7 +1,8 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import type { Task } from "../types/task";
 import { useTasks } from "../hooks/useTasks";
 import { useTasksDispatch } from "../hooks/useTasksDispatch";
+import { isClickInsideNodeRef } from "../utils/DOM";
 
 export function TaskList() {
   const tasks = useTasks();
@@ -22,12 +23,40 @@ function Task({ task }: TaskProps) {
   const [newContent, setNewContent] = useState(task.content);
   const dispatch = useTasksDispatch();
   const editableFieldRef = useRef<HTMLInputElement | null>(null);
+  const editButtonRef = useRef<HTMLButtonElement | null>(null);
+
+  const cancelEdit = useCallback(() => {
+    setNewContent(task.content);
+    setIsEditing(false);
+  }, [setNewContent, setIsEditing, task.content]);
+
   useEffect(() => {
     if (isEditing) {
       editableFieldRef.current?.focus();
     }
   }, [isEditing]);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      const isClickOutsideField =
+        !isClickInsideNodeRef(editButtonRef, e) &&
+        !isClickInsideNodeRef(editableFieldRef, e);
+      if (isClickOutsideField) {
+        cancelEdit();
+      }
+    }
+
+    if (isEditing) {
+      document.addEventListener("click", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [isEditing, cancelEdit]);
+
   const checkboxId = `${task.id}-checkbox`;
+
   function handleEdit() {
     setIsEditing(true);
   }
@@ -62,8 +91,7 @@ function Task({ task }: TaskProps) {
   function handleKeys(e: React.KeyboardEvent<HTMLInputElement>) {
     switch (e.key) {
       case "Escape": {
-        setNewContent(task.content);
-        setIsEditing(false);
+        cancelEdit();
         return;
       }
       case "Enter": {
@@ -99,7 +127,7 @@ function Task({ task }: TaskProps) {
       <time className="timestamp">
         {new Date(task.updatedAt).toLocaleString()}
       </time>
-      <button onClick={handleToggleEdit} style={{ width: "10%" }}>
+      <button onClick={handleToggleEdit} ref={editButtonRef}>
         {isEditing ? "Save" : "Edit"}
       </button>
       <button
@@ -109,7 +137,6 @@ function Task({ task }: TaskProps) {
             id: task.id,
           });
         }}
-        style={{ width: "10%" }}
       >
         Delete
       </button>

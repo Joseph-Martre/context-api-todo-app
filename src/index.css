@@ -150,3 +150,7 @@ body {
 .task .timestamp {
   margin-right: auto;
 }
+
+.task button {
+  width: 10%;
+}
