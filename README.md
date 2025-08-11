@@ -4,6 +4,14 @@ This is an example Todo app built with React to showcase the use of the **Contex
 
 ---
 
+## Live Demo
+
+Check out the live version of the app deployed on Netlify:
+
+[Context API Todo App](https://context-api-todo-app-jm.netlify.app/)
+
+---
+
 ## Features
 
 - **Context API + useReducer:**  
