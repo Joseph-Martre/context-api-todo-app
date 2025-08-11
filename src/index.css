@@ -154,3 +154,48 @@ body {
 .task button {
   width: 10%;
 }
+
+/* Mobile & tablet responsiveness */
+@media (max-width: 768px) {
+  #app {
+    padding: 1rem;
+  }
+
+  .add-task-container {
+    flex-direction: column;
+  }
+
+  .add-task-container button {
+    width: 100%;
+  }
+
+  .task {
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .task label {
+    width: 100%;
+  }
+
+  .task input[type="checkbox"] {
+    display: none;
+  }
+
+  .task-content {
+    width: 100%;
+    text-align: center;
+  }
+
+  .timestamp {
+    width: 100%;
+    order: 3; /* push timestamp below other elements */
+    font-size: 0.75rem;
+  }
+
+  .task button {
+    width: 100%;
+  }
+}
