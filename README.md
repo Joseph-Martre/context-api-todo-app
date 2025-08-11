@@ -1,69 +1,80 @@
-# React + TypeScript + Vite
+# Context API Todo App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is an example Todo app built with React to showcase the use of the **Context API** combined with the **useReducer** pattern for global state management.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Live Demo
 
-## Expanding the ESLint configuration
+Check out the live version of the app deployed on Netlify:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+[Context API Todo App](https://context-api-todo-app-jm.netlify.app/)
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+## Features
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- **Context API + useReducer:**  
+  Centralized task state management with a reducer, exposed via context providers.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- **Custom Hooks:**  
+  Convenient custom hooks to consume task state and dispatch actions in components.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- **Global & Local State:**  
+  Uses context for global task state, and local React state for UI interactions like editing and input fields.
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- **Keyboard Functionality:**  
+  - Press **Enter** to add or save tasks.  
+  - Press **Escape** to cancel editing or clear inputs.
+
+- **UX Enhancements:**  
+  - No layout shifts when toggling edit mode.  
+  - Modal feedback on add-task failures (e.g., empty input).  
+  - Larger clickable areas and accessible labels.
+
+- **Tests:**  
+  Includes both unit tests for the reducer logic and integration tests for the full app using [Vitest](https://vitest.dev/) and [React Testing Library](https://testing-library.com/docs/react-testing-library/intro).
+
+---
+
+## Running the App
+
+\`\`\`
+npm install
+npm run dev
+\`\`\`
+
+Open your browser at \`http://localhost:5173\` .
+
+---
+
+## Running Tests
+
+This project uses [Vitest](https://vitest.dev/) for testing.
+
+Run the full test suite with:
+
+\`\`\`
+npx vitest
+\`\`\`
+
+---
+
+## Project Inspiration
+
+Modeled after the [React Docs example for updating data via context](https://react.dev/reference/react/useContext#updating-data-passed-via-context), this project demonstrates clean separation of concerns and practical usage of React's state management tools in a real-world style Todo app.
+
+---
+
+## Folder Structure
+
+- \`src/contexts\` — Context providers and reducer logic  
+- \`src/hooks\` — Custom hooks for consuming context  
+- \`src/components\` — UI components
+- \`src/\_\_tests\_\_\` — Unit and integration tests
+
+---
+
+## License
+
+ISC © Joseph Martin
