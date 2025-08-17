@@ -11,6 +11,8 @@ describe("tasksReducer", () => {
     const result = tasksReducer(initial, {
       type: "added",
       content: "New task",
+      id: crypto.randomUUID(),
+      updatedAt: Date.now(),
     });
     expect(result).toHaveLength(2);
     expect(result[0].content).toBe("New task");
@@ -26,6 +28,7 @@ describe("tasksReducer", () => {
       type: "contentChanged",
       id: "1",
       content: "Updated",
+      updatedAt: Date.now(),
     });
     expect(result[0].content).toBe("Updated");
   });
