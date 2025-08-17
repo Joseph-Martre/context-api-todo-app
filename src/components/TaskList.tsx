@@ -1,8 +1,9 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useCallback, useId } from "react";
 import type { Task } from "../types/task";
 import { useTasks } from "../hooks/useTasks";
 import { useTasksDispatch } from "../hooks/useTasksDispatch";
-import { isClickInsideNodeRef } from "../utils/DOM";
+import { useClickAway } from "@uidotdev/usehooks";
+import { useFocus } from "../hooks/useFocus";
 
 export function TaskList() {
   const tasks = useTasks();
@@ -21,45 +22,24 @@ type TaskProps = {
 function Task({ task }: TaskProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [newContent, setNewContent] = useState(task.content);
+
   const dispatch = useTasksDispatch();
-  const editableFieldRef = useRef<HTMLInputElement | null>(null);
-  const editButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const cancelEdit = useCallback(() => {
     setNewContent(task.content);
     setIsEditing(false);
   }, [task.content]);
 
-  useEffect(() => {
-    if (isEditing) {
-      editableFieldRef.current?.focus();
-    }
-  }, [isEditing]);
+  const taskElementRef = useClickAway<HTMLLIElement>(cancelEdit);
 
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      const isClickOutsideField =
-        !isClickInsideNodeRef(editButtonRef, e) &&
-        !isClickInsideNodeRef(editableFieldRef, e);
-      if (isClickOutsideField) {
-        cancelEdit();
-      }
-    }
+  const editableFieldRef = useFocus<HTMLInputElement>(isEditing);
 
-    if (isEditing) {
-      document.addEventListener("click", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, [isEditing, cancelEdit]);
-
-  const checkboxId = `${task.id}-checkbox`;
+  const checkboxId = useId();
 
   function handleEdit() {
     setIsEditing(true);
   }
+
   function handleSave() {
     setIsEditing(false);
     const trimmedContent = newContent.trim();
@@ -76,19 +56,22 @@ function Task({ task }: TaskProps) {
       updatedAt: Date.now(),
     });
   }
-  function handleToggleEdit() {
+
+  function handleSubmitOrEdit() {
     if (isEditing) {
       handleSave();
     } else {
       handleEdit();
     }
   }
+
   function handleToggleTask() {
     dispatch({
       type: "toggled",
       id: task.id,
     });
   }
+
   function handleKeys(e: React.KeyboardEvent<HTMLInputElement>) {
     switch (e.key) {
       case "Escape": {
@@ -96,7 +79,7 @@ function Task({ task }: TaskProps) {
         return;
       }
       case "Enter": {
-        handleToggleEdit();
+        handleSubmitOrEdit();
         return;
       }
       default: {
@@ -106,7 +89,7 @@ function Task({ task }: TaskProps) {
   }
 
   return (
-    <li className="task">
+    <li className="task" ref={taskElementRef}>
       <input
         type="checkbox"
         checked={task.completed}
@@ -115,8 +98,8 @@ function Task({ task }: TaskProps) {
       />
       <label htmlFor={isEditing ? undefined : checkboxId}>
         <input
-          className={`task-content${task.completed ? " completed" : ""} ${!isEditing ? "readonly" : ""}`}
-          value={isEditing ? newContent : task.content}
+          className={`task-content ${task.completed ? "completed" : ""} ${!isEditing ? "readonly" : ""}`}
+          value={newContent}
           onChange={(e) => setNewContent(e.target.value)}
           readOnly={!isEditing}
           onKeyDown={handleKeys}
@@ -128,7 +111,7 @@ function Task({ task }: TaskProps) {
       <time className="timestamp">
         {new Date(task.updatedAt).toLocaleString()}
       </time>
-      <button onClick={handleToggleEdit} ref={editButtonRef}>
+      <button onClick={handleSubmitOrEdit}>
         {isEditing ? "Save" : "Edit"}
       </button>
       <button
