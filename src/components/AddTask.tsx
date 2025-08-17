@@ -17,6 +17,8 @@ export function AddTask() {
     dispatch({
       type: "added",
       content: trimmedNewToDo,
+      id: crypto.randomUUID(),
+      updatedAt: Date.now(),
     });
   }
 

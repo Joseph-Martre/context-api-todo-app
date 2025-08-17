@@ -28,7 +28,7 @@ function Task({ task }: TaskProps) {
   const cancelEdit = useCallback(() => {
     setNewContent(task.content);
     setIsEditing(false);
-  }, [setNewContent, setIsEditing, task.content]);
+  }, [task.content]);
 
   useEffect(() => {
     if (isEditing) {
@@ -73,6 +73,7 @@ function Task({ task }: TaskProps) {
       type: "contentChanged",
       id: task.id,
       content: trimmedContent,
+      updatedAt: Date.now(),
     });
   }
   function handleToggleEdit() {

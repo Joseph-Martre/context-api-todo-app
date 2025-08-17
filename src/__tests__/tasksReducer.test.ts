@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { tasksReducer } from "../context/TasksProvider";
+import { tasksReducer } from "../context/tasksReducer";
 import type { Task } from "../types/task";
 
 describe("tasksReducer", () => {
